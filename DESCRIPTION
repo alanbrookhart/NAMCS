@@ -26,7 +26,6 @@ Imports:
 Suggests:
     future (>= 1.17.0),
     testthat
-LazyData: true
 Repository: cran.novisci.com
 License: GPL-3 + file LICENSE
 Roxygen: list(markdown = TRUE)

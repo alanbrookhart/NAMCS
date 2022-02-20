@@ -1,0 +1,763 @@
+---
+title: "National Ambulatory Medical Care Survey, Statin study"
+author: "Alan Brookhart"
+date: "6/13/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(foreign)
+library(causalRisk)
+library(foreach)
+library(purrr)
+library(NAMCS)
+```
+
+# Exercise 1
+
+## Initial exploration of data
+
+### Unweighted Table 1
+
+```{r table1}
+
+models = specify_models(identify_outcome(death_time),
+                        identify_treatment(statin_use))
+
+death_unadj = estimate_ipwrisk(sta, models, labels  = c("Death, unadjusted"))
+
+make_table1(death_unadj,
+            sex, 
+            race, 
+            region, 
+            age, obesity,
+            diabetes, 
+            tobacco_use,
+            asthma, 
+            hyperlipidemia, 
+            heart_failure, 
+            cerebrovascular_disease, 
+            chronic_kidney_disease, 
+            chronic_pulmonary_disease, 
+            osteoporosis, 
+            cancer, 
+            ppi_use, 
+            aspirin_use, 
+            anti_coagulant_use, 
+            corticosteroid_use, smd = TRUE)
+```
+
+
+## Estimation of simple propensity score with just age, sex, and race
+
+### PS Histogram
+```{r hist}
+
+models = specify_models(identify_outcome(death_time),
+                        identify_treatment(statin_use, ~age+ sex +race))
+
+death_agesex = estimate_ipwrisk(sta, models, labels  = c("Death, age-sex adjusted"))
+
+
+hist(death_agesex)
+```
+
+### IP weighted Table 1
+
+```{r ipw_table1}
+make_table1(death_agesex,
+            sex, 
+            race, 
+            region, 
+            age, obesity,
+            diabetes, 
+            tobacco_use,
+            asthma, 
+            hyperlipidemia, 
+            heart_failure, 
+            cerebrovascular_disease, 
+            chronic_kidney_disease, 
+            chronic_pulmonary_disease, 
+            osteoporosis, 
+            cancer, 
+            ppi_use, 
+            aspirin_use, 
+            anti_coagulant_use, 
+            corticosteroid_use, smd = TRUE)
+```
+
+
+### IP weights summary table
+```{r wt_summary}
+make_wt_summary_table(death_agesex)
+
+```
+
+## Estimation of elaborate propensity score 
+
+### PS Histogram
+```{r hist2}
+models = specify_models(identify_outcome(death_time),
+                        identify_treatment(statin_use, ~age +
+                                          sex +
+                                          race + 
+                                          region +
+                                          obesity +
+                                          diabetes+ 
+                                          tobacco_use+
+                                          asthma+ 
+                                          hyperlipidemia+ 
+                                          heart_failure+ 
+                                          cerebrovascular_disease+ 
+                                          chronic_kidney_disease+ 
+                                          chronic_pulmonary_disease+ 
+                                          osteoporosis+ 
+                                          cancer+ 
+                                          ppi_use+ 
+                                          aspirin_use+ 
+                                          anti_coagulant_use+ 
+                                          corticosteroid_use))
+
+death_bigps = estimate_ipwrisk(sta, models, labels  = c("Death, fully adjusted"))
+
+hist(death_bigps)
+```
+
+### IP weighted table 1
+
+```{r ipw2_table1}
+make_table1(death_bigps,
+            sex, 
+            race, 
+            region, 
+            age, 
+            obesity,
+            diabetes, 
+            tobacco_use,
+            asthma, 
+            hyperlipidemia, 
+            heart_failure, 
+            cerebrovascular_disease, 
+            chronic_kidney_disease, 
+            chronic_pulmonary_disease, 
+            osteoporosis, 
+            cancer, 
+            ppi_use, 
+            aspirin_use, 
+            anti_coagulant_use, 
+            corticosteroid_use, smd = TRUE)
+```
+
+
+### IP weights summary table
+```{r wt_summary2}
+make_wt_summary_table(death_bigps)
+
+```
+
+## SMR weighting
+
+### Unweighted PS Histogram
+
+```{r hist_smr}
+models = specify_models(identify_outcome(death_time),
+                        identify_treatment(statin_use, ~age +
+                                          sex +
+                                          race + 
+                                          region +
+                                          obesity +
+                                          diabetes+ 
+                                          tobacco_use+
+                                          asthma+ 
+                                          hyperlipidemia+ 
+                                          heart_failure+ 
+                                          cerebrovascular_disease+ 
+                                          chronic_kidney_disease+ 
+                                          chronic_pulmonary_disease+ 
+                                          osteoporosis+ 
+                                          cancer+ 
+                                          ppi_use+ 
+                                          aspirin_use+ 
+                                          anti_coagulant_use+ 
+                                          corticosteroid_use))
+
+death_bigps_smr1 = estimate_ipwrisk(sta, models, wt_type = 1, labels  = c("Death, adjusted, SMRW Untreated"))
+
+death_bigps_smr2 = estimate_ipwrisk(sta, models, wt_type = 2, labels  = c("Death, adjusted, SMRW Treated"))
+
+hist(death_bigps)
+```
+
+### Weighted PS histograms
+```{r}
+hist(death_bigps, death_bigps_smr1, death_bigps_smr2, ncol = 3, weight = TRUE)
+```
+
+### Table 1 with SMR weights standardizing the untreated
+```{r}
+make_table1(death_bigps_smr1,
+            sex, 
+            race, 
+            region, 
+            age, obesity,
+            diabetes, 
+            tobacco_use,
+            asthma, 
+            hyperlipidemia, 
+            heart_failure, 
+            cerebrovascular_disease, 
+            chronic_kidney_disease, 
+            chronic_pulmonary_disease, 
+            osteoporosis, 
+            cancer, 
+            ppi_use, 
+            aspirin_use, 
+            anti_coagulant_use, 
+            corticosteroid_use, side.by.side = T, smd = TRUE)
+```
+
+### Table 1 with SMR weights standardizing the treated
+```{r}
+make_table1(death_bigps_smr2,
+            sex, 
+            race, 
+            region, 
+            age, obesity,
+            diabetes, 
+            tobacco_use,
+            asthma, 
+            hyperlipidemia, 
+            heart_failure, 
+            cerebrovascular_disease, 
+            chronic_kidney_disease, 
+            chronic_pulmonary_disease, 
+            osteoporosis, 
+            cancer, 
+            ppi_use, 
+            aspirin_use, 
+            anti_coagulant_use, 
+            corticosteroid_use,  side.by.side = T, smd = TRUE)
+```
+
+## Estimation of elaborate propensity score w/ trimming at top and bottom 5%
+
+### PS Histogram
+```{r hist3}
+models = specify_models(identify_outcome(death_time),
+                        identify_treatment(statin_use, ~age +
+                                          sex +
+                                          race + 
+                                          region +
+                                          obesity +
+                                          diabetes+ 
+                                          tobacco_use+
+                                          asthma+ 
+                                          hyperlipidemia+ 
+                                          heart_failure+ 
+                                          cerebrovascular_disease+ 
+                                          chronic_kidney_disease+ 
+                                          chronic_pulmonary_disease+ 
+                                          osteoporosis+ 
+                                          cancer+ 
+                                          ppi_use+ 
+                                          aspirin_use+ 
+                                          anti_coagulant_use+ 
+                                          corticosteroid_use))
+
+death_bigps_trim = estimate_ipwrisk(sta, models, labels  = c("Death, adjusted, trimmed"), trim = 0.05)
+
+hist(death_bigps_trim)
+```
+
+### IP weighted table 1
+
+```{r ipw3_table1}
+make_table1(death_bigps_trim,
+            sex, 
+            race, 
+            region, 
+            age, obesity,
+            diabetes, 
+            tobacco_use,
+            asthma, 
+            hyperlipidemia, 
+            heart_failure, 
+            cerebrovascular_disease, 
+            chronic_kidney_disease, 
+            chronic_pulmonary_disease, 
+            osteoporosis, 
+            cancer, 
+            ppi_use, 
+            aspirin_use, 
+            anti_coagulant_use, 
+            corticosteroid_use, smd = TRUE)
+```
+
+### IP weight summary table
+```{r wt_summary3}
+make_wt_summary_table(death_bigps_trim)
+```
+
+### Effect of removing hyperlipidemia from the PS model
+```{r remove_hyperlipid}
+
+death_bigps2 = death_bigps %>%
+  update_treatment(new_formula = ~. -hyperlipidemia) %>%
+  update_label("Drop Hyperlipidemia") %>%
+  re_estimate()
+
+hist(death_bigps, death_bigps2)
+
+make_table1(death_bigps2,
+            sex, 
+            race, 
+            region, 
+            age, obesity,
+            diabetes, 
+            tobacco_use,
+            asthma, 
+            hyperlipidemia, 
+            heart_failure, 
+            cerebrovascular_disease, 
+            chronic_kidney_disease, 
+            chronic_pulmonary_disease, 
+            osteoporosis, 
+            cancer, 
+            ppi_use, 
+            aspirin_use, 
+            anti_coagulant_use, 
+            corticosteroid_use, smd = TRUE)
+
+```
+
+
+# Exercise 2
+
+## Estimation of outcome risk
+
+### Overall risk death, unadjusted
+```{r overall}
+models = specify_models(identify_outcome(death_time))
+
+death_overall = estimate_ipwrisk(sta, models, labels  = c("Death overall"))
+
+plot(death_overall) + ylab("Cumulative Risk") + xlab("Time in years")
+```
+
+
+## Overall risk CV events, unadjusted, censoring by death
+```{r cv_overall}
+models = specify_models(identify_outcome(cv_time),
+                        identify_censoring(death_time))
+
+cv_overall = estimate_ipwrisk(sta, models, labels  = c("CV risk overall"))
+
+plot(cv_overall) + ylab("Cumulative Risk") + xlab("Time in years")
+```
+
+## Estimation of risk death, by treatment group
+
+### Unadjusted cumulative risk of death and unadjusted cumulative risk difference
+
+```{r}
+plot(death_unadj) + 
+  ylab("Cumulative Risk") + xlab("Time in years")
+
+plot(death_unadj, effect_measure_type = "RD") +
+  ylab("Cumulative Risk Difference") + xlab("Time in years")
+```
+
+### Adjusted and unadjusted cumulative risk of death and unadjusted cumulative risk difference
+
+```{r}
+plot(death_unadj, death_bigps,scales = "fixed") + 
+  ylab("Cumulative Risk") + xlab("Time in years")
+
+plot(death_unadj, death_bigps, effect_measure_type = "RD", scales = "fixed") +
+  ylab("Cumulative Risk Difference") + xlab("Time in years")
+```
+
+
+### Adjusted, unadjusted, trimmed, and SMR weighted cumulative risk of death and unadjusted cumulative risk difference
+
+```{r}
+plot(death_unadj, death_agesex, death_bigps, death_bigps_trim, death_bigps_smr1, death_bigps_smr2, ncol = 3, scales = "fixed") + 
+  ylab("Cumulative Risk") + xlab("Time in years")
+
+plot(death_unadj, death_agesex, death_bigps, death_bigps_trim, death_bigps_smr1, death_bigps_smr2, ncol = 3, effect_measure_type = "RD", scales = "fixed") +
+  ylab("Cumulative Risk Difference") + xlab("Time in years")
+
+```
+
+
+### Table 2: 10-year cumulative risk and risk difference
+
+```{r}
+make_table2(death_unadj, death_agesex, death_bigps, death_bigps_trim, effect_measure_type = "RD", risk_time = 10) 
+
+forest_plot(death_unadj, death_agesex, death_bigps, death_bigps_trim, death_bigps_smr1, death_bigps_smr2, risk_time = 10, effect_measure_type = "RD")
+
+```
+
+### Table 2: 10-year cumulative risk and risk ratio
+
+```{r}
+make_table2(death_unadj, death_agesex, death_bigps, death_bigps_trim, effect_measure_type = "RR", risk_time = 10) 
+```
+
+## Estimation of the risk a CV event
+
+### Estimation w/ death as censoring event
+
+```{r cv_unadj}
+models = specify_models(identify_outcome(cv_time),
+                        identify_censoring(death_time),
+                        identify_treatment(statin_use))
+
+cv_unadj = estimate_ipwrisk(sta, models, labels  = c("CV Risk, unadjusted"))
+
+plot(cv_unadj)  +
+  ylab("Cumulative Risk Difference") + xlab("Time in years")
+```
+
+### Estimation w/ death as censoring event, addressing confounding 
+
+```{r cv_iptw_adj}
+models = specify_models(identify_outcome(cv_time),
+                        identify_censoring(death_time),
+                        identify_treatment(statin_use, ~age +
+                                          sex +
+                                          race + 
+                                          region +
+                                          obesity +
+                                          diabetes+ 
+                                          tobacco_use+
+                                          asthma+ 
+                                          hyperlipidemia+ 
+                                          heart_failure+ 
+                                          cerebrovascular_disease+ 
+                                          chronic_kidney_disease+ 
+                                          chronic_pulmonary_disease+ 
+                                          osteoporosis+ 
+                                          cancer+ 
+                                          ppi_use+ 
+                                          aspirin_use+ 
+                                          anti_coagulant_use+ 
+                                          corticosteroid_use))
+
+cv_iptw_adj = estimate_ipwrisk(sta, models, labels  = c("CV Risk, censoring at death, IPTW"))
+
+plot(cv_unadj, cv_iptw_adj, scales = "fixed")  +
+  ylab("Cumulative Risk Difference") + xlab("Time in years")
+```
+
+### Estimation w/ death as censoring event, addressing confounding and dependent censoring
+
+```{r cv_iptcw_adj}
+
+models = specify_models(identify_outcome(cv_time),
+                        identify_censoring(death_time, ~age +
+                                          sex +
+                                          race +
+                                          region + 
+                                          obesity +
+                                          diabetes+ 
+                                          tobacco_use+
+                                          asthma+ 
+                                          hyperlipidemia+ 
+                                          heart_failure+ 
+                                          cerebrovascular_disease+ 
+                                          chronic_kidney_disease+ 
+                                          chronic_pulmonary_disease+ 
+                                          osteoporosis+ 
+                                          cancer+ 
+                                          ppi_use+ 
+                                          aspirin_use+ 
+                                          anti_coagulant_use+ 
+                                          corticosteroid_use),
+                        identify_treatment(statin_use, ~age +
+                                          sex +
+                                          race + 
+                                          region +
+                                          obesity +
+                                          diabetes+ 
+                                          tobacco_use+
+                                          asthma+ 
+                                          hyperlipidemia+ 
+                                          heart_failure+ 
+                                          cerebrovascular_disease+ 
+                                          chronic_kidney_disease+ 
+                                          chronic_pulmonary_disease+ 
+                                          osteoporosis+ 
+                                          cancer+ 
+                                          ppi_use+ 
+                                          aspirin_use+ 
+                                          anti_coagulant_use+ 
+                                          corticosteroid_use))
+
+cv_iptcw_adj = estimate_ipwrisk(sta, models, labels  = c("CV Risk, cens at death, IPTCW"))
+
+plot(cv_unadj, cv_iptw_adj, cv_iptcw_adj, scales = "fixed", ncol = 3)  + 
+  ylab("Cumulative Risk") + xlab("Time in years")
+
+plot(cv_unadj, cv_iptw_adj, cv_iptcw_adj, effect_measure_type = "RD", overlay = TRUE,  ncol = 3, scales = "fixed")  +
+  ylab("Cumulative Risk Difference") + xlab("Time in years")
+```
+
+### Estimation w/ death as a competing event
+
+```{r cv_cr_adj}
+models = specify_models(identify_outcome(cv_death_time),
+                        identify_competing_risk(cv_indicator, event_value = 1),
+                        identify_treatment(statin_use, ~age +
+                                          sex +
+                                          race + 
+                                          region +
+                                          obesity +
+                                          diabetes+ 
+                                          tobacco_use+
+                                          asthma+ 
+                                          hyperlipidemia+ 
+                                          heart_failure+ 
+                                          cerebrovascular_disease+ 
+                                          chronic_kidney_disease+ 
+                                          chronic_pulmonary_disease+ 
+                                          osteoporosis+ 
+                                          cancer+ 
+                                          ppi_use+ 
+                                          aspirin_use+ 
+                                          anti_coagulant_use+ 
+                                          corticosteroid_use))
+
+cv_cr_adj = estimate_ipwrisk(sta, models, labels  = c("CV Risk, death as comp risk, IPTW"))
+
+plot(cv_iptcw_adj, cv_cr_adj, ncol = 2, scales = "fixed")  +
+  ylab("Cumulative Risk Difference") + xlab("Time in years")
+
+plot(cv_iptcw_adj, cv_cr_adj, effect_measure_type = "RD", ncol = 2, scales = "fixed")  +
+  ylab("Cumulative Risk Difference") + xlab("Time in years")
+
+make_table2(cv_iptcw_adj, cv_cr_adj, risk_time = 10)
+```
+
+
+# Exercise 3
+
+## Consideration of >2 treatment groups, analysis by statin potency
+
+### Unweighted Table 1
+
+```{r table1_multi}
+models = specify_models(identify_outcome(death_time),
+                        identify_treatment(statinpotency_use))
+
+death_unadj_multi = estimate_ipwrisk(sta, models, labels  = c("Death, by potency, unadjusted"))
+
+make_table1(death_unadj_multi,
+            sex, 
+            race, 
+            region, 
+            age, obesity,
+            diabetes, 
+            tobacco_use,
+            asthma, 
+            hyperlipidemia, 
+            heart_failure, 
+            cerebrovascular_disease, 
+            chronic_kidney_disease, 
+            chronic_pulmonary_disease, 
+            osteoporosis, 
+            cancer, 
+            ppi_use, 
+            aspirin_use, 
+            anti_coagulant_use, 
+            corticosteroid_use, smd = TRUE)
+```
+
+
+## Estimation w/ an elaborate propensity score 
+
+### PS Histogram
+```{r hist2_multi}
+models = specify_models(identify_outcome(death_time),
+                        identify_treatment(statinpotency_use, ~age +
+                                          sex +
+                                          race + 
+                                          region +
+                                          obesity +
+                                          diabetes+ 
+                                          tobacco_use+
+                                          asthma+ 
+                                          hyperlipidemia+ 
+                                          heart_failure+ 
+                                          cerebrovascular_disease+ 
+                                          chronic_kidney_disease+ 
+                                          chronic_pulmonary_disease+ 
+                                          osteoporosis+ 
+                                          cancer+ 
+                                          ppi_use+ 
+                                          aspirin_use+ 
+                                          anti_coagulant_use+ 
+                                          corticosteroid_use))
+
+death_bigps_multi = estimate_ipwrisk(sta, models, labels  = c("Death, by potency, adjusted"))
+
+hist(death_bigps_multi, cat = 1, binwidth = 0.03)
+hist(death_bigps_multi, cat = 2, binwidth = 0.03)
+```
+
+### IP weighted table 1
+
+```{r ipw2_table1_multi}
+make_table1(death_bigps_multi,
+            sex, 
+            race, 
+            region, 
+            age, obesity,
+            diabetes, 
+            tobacco_use,
+            asthma, 
+            hyperlipidemia, 
+            heart_failure, 
+            cerebrovascular_disease, 
+            chronic_kidney_disease, 
+            chronic_pulmonary_disease, 
+            osteoporosis, 
+            cancer, 
+            ppi_use, 
+            aspirin_use, 
+            anti_coagulant_use, 
+            corticosteroid_use, smd = TRUE)
+```
+
+
+### IP weight summary table
+```{r wt_summary_multi}
+make_wt_summary_table(death_bigps_multi)
+
+```
+
+### Estimate of cumulative risk of CV outcomes and death by statin potency 
+```{r risk_multi}
+models = specify_models(identify_outcome(cv_time),
+                        identify_censoring(death_time),
+                        identify_treatment(statinpotency_use, ~age +
+                                          sex +
+                                          race + 
+                                          region +
+                                          obesity +
+                                          diabetes+ 
+                                          tobacco_use+
+                                          asthma+ 
+                                          hyperlipidemia+ 
+                                          heart_failure+ 
+                                          cerebrovascular_disease+ 
+                                          chronic_kidney_disease+ 
+                                          chronic_pulmonary_disease+ 
+                                          osteoporosis+ 
+                                          cancer+ 
+                                          ppi_use+ 
+                                          aspirin_use+ 
+                                          anti_coagulant_use+ 
+                                          corticosteroid_use))
+
+cv_bigps_multi = estimate_ipwrisk(sta, models, labels  = c("CV Risk, by potency"))
+
+plot(death_bigps_multi , cv_bigps_multi, ncol = 2, scales = "fixed")  +
+  ylab("Cumulative Risk") + xlab("Time in years")
+
+plot(death_bigps_multi , cv_bigps_multi, effect_measure_type = "RD", ncol = 2, scales = "fixed")  +
+  ylab("Cumulative Risk Difference") + xlab("Time in years")
+
+make_table2(death_bigps_multi , cv_bigps_multi, risk_time = 10)
+```
+
+
+## Estimation of risk if nonadherence could be prevented (per protocol effect)
+
+## Non-adherence risk by treatment group, censoring by death
+```{r nonadh_overall}
+models = specify_models(identify_outcome(nonadherence),
+                        identify_treatment(statin_use),
+                        identify_censoring(death_time))
+
+nonadherence_overall = estimate_ipwrisk(sta, models, labels  = c("Nonadherence risk, unadjusted"))
+
+plot(nonadherence_overall) + ylab("Cumulative Risk") + xlab("Time in years")
+```
+
+
+### Effect of uninterrupted statin treatment on risk death
+```{r pp_death}
+models = specify_models(identify_outcome(death_time),
+                        identify_censoring(nonadherence),
+                        identify_treatment(statin_use, ~age +
+                                          sex +
+                                          race + 
+                                          region +
+                                          obesity +
+                                          diabetes+ 
+                                          tobacco_use+
+                                          asthma+ 
+                                          hyperlipidemia+ 
+                                          heart_failure+ 
+                                          cerebrovascular_disease+ 
+                                          chronic_kidney_disease+ 
+                                          chronic_pulmonary_disease+ 
+                                          osteoporosis+ 
+                                          cancer+ 
+                                          ppi_use+ 
+                                          aspirin_use+ 
+                                          anti_coagulant_use+ 
+                                          corticosteroid_use))
+
+death_bigps_pp = estimate_ipwrisk(sta, models, labels  = c("Death, per protocol"))
+
+plot(death_bigps, death_bigps_pp, scales = "fixed")   +
+  ylab("Cumulative Risk") + xlab("Time in years")
+
+plot(death_bigps, death_bigps_pp, effect_measure_type = "RD", scales = "fixed")   +
+  ylab("Cumulative Risk") + xlab("Time in years")
+
+make_table2(death_bigps, death_bigps_pp, risk_time = 10)
+```
+
+
+### Effect of uninterrupted statin treatment on risk of cardiovascular events
+```{r pp_dcv}
+models = specify_models(identify_outcome(cv_time),
+                        identify_censoring(nonadherence),
+                        identify_censoring(death_time),
+                        identify_treatment(statin_use, ~age +
+                                          sex +
+                                          race + 
+                                          region +
+                                          obesity +
+                                          diabetes+ 
+                                          tobacco_use+
+                                          asthma+ 
+                                          hyperlipidemia+ 
+                                          heart_failure+ 
+                                          cerebrovascular_disease+ 
+                                          chronic_kidney_disease+ 
+                                          chronic_pulmonary_disease+ 
+                                          osteoporosis+ 
+                                          cancer+ 
+                                          ppi_use+ 
+                                          aspirin_use+ 
+                                          anti_coagulant_use+ 
+                                          corticosteroid_use))
+
+cv_bigps_pp = estimate_ipwrisk(sta, models, labels  = c("CV, per protocol"))
+
+plot(cv_iptw_adj, cv_bigps_pp, scales = "fixed")   +
+  ylab("Cumulative Risk") + xlab("Time in years")
+
+plot(cv_iptw_adj, cv_bigps_pp, effect_measure_type = "RD", scales = "fixed")   +
+  ylab("Cumulative Risk") + xlab("Time in years")
+
+make_table2(cv_iptcw_adj, cv_bigps_pp, risk_time = 10)
+```
+

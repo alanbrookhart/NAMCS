@@ -22,7 +22,7 @@ You can install the package from Bitbucket
 
 ```{r bb-installation, eval = FALSE}
 library("devtools")
-devtools::install_bitbucket("novisci/NAMCS")
+devtools::install_github("alanbrookhart/NAMCS")
 ```
 
 ## Codebook 

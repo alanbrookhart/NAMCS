@@ -2,18 +2,18 @@ NAMCS NSAID data
 ----------------
 
 This package builds a cohort from the 2005-2009 public use files from
-National Ambulatory Medical Care Data (NAMCS). The NAMCS survey covers
-over 20,000 visits per year and includes data on patient demographics,
-comorbidities, physician and practice characteristics, and treatment
-received, including medications. Currently, medications are classified
-using the Multum Lexicon. Each year a few variables are added to,
-deleted from, or recoded in the public use dataset.
+National Ambulatory Medical Care Data Survey (NAMCS). The NAMCS survey
+covers over 20,000 visits per year and includes data on patient
+demographics, comorbidities, physician and practice characteristics, and
+treatment received, including medications. Currently, medications are
+classified using the Multum Lexicon. Each year a few variables are added
+to, deleted from, or recoded in the public use dataset.
 
-From these data,we identify new users of either NSAID or Cox-2 selective
-non-steroidal antiinflammatory drugs (NSAIDs). The data is augmented
-with a simulated peptic ulcer disease outcome. Variables were selected
-for this extract based on relevance to the example analyses and on
-availability for most or all of the 2005-2009 time range.
+From these data, we identify new users of either NSAID or Cox-2
+selective non-steroidal antiinflammatory drugs (NSAIDs). The data is
+augmented with a simulated peptic ulcer disease outcome. Variables were
+selected for this extract based on relevance to the example analyses and
+on availability for most or all of the 2005-2009 time range.
 
 Installation
 ------------
@@ -21,7 +21,7 @@ Installation
 You can install the package from Bitbucket
 
     library("devtools")
-    devtools::install_bitbucket("novisci/NAMCS")
+    devtools::install_github("alanbrookhart/NAMCS")
 
 Codebook
 --------

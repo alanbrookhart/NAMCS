@@ -127,7 +127,8 @@ simulWeib <- function(df.in)
 
   age.rev = (df1$age-53)/10
 
-  lp.1 = with(df1, log(0.5)*I(statin_use=="Statin")  + log(1.5)*age.rev +
+  lp.1 = with(df1, log(0.5)*I(statin_use=="Statin")  +
+                log(1.5)*age.rev +
                 log(1.5)*I(coronory_artery_disease=="Yes") +
                 log(1.5)*I(tobacco_use=="Yes") + log(1.5)*I(diabetes=="Yes"))
 
@@ -142,8 +143,8 @@ simulWeib <- function(df.in)
 
   # Weibull latent event times
   v <- runif(N)
-  cv_time <- (- log(v) / (0.011 * exp(lp.1)))^(1 / shape.t1) + 0.1
-  death_time <- (- log(v) / (0.012 * exp(lp.2)))^(1 / shape.t2) + 0.1 # risk is smaller for mortality compared to hospitalization. To make coefficients for cat.2 match that specified for lp.1 need to set the mortality risk much smaller than hospitalization (average of simulated parameters run in the following for loop)
+  cv_time <- (- log(v) / (0.03 * exp(lp.1)))^(1 / shape.t1) + 0.1
+  death_time <- (- log(v) / (0.03 * exp(lp.2)))^(1 / shape.t2) + 0.1 # risk is smaller for mortality compared to hospitalization. To make coefficients for cat.2 match that specified for lp.1 need to set the mortality risk much smaller than hospitalization (average of simulated parameters run in the following for loop)
   death_time = round(ifelse(death_time >10, NA, death_time), 2)
   cv_time = round(ifelse(cv_time >10 | cv_time > death_time, NA, cv_time),2)
   cv_death_time = pmin(cv_time, death_time, na.rm = TRUE)
@@ -165,4 +166,4 @@ simulWeib <- function(df.in)
 sta = simulWeib(sta)
 
 # Save R data set in the NAMCS package
-devtools::use_data(sta, overwrite=TRUE)
+#devtools::use_data(sta, overwrite=TRUE)

@@ -20,19 +20,8 @@ Installation
 
 You can install the package from Github
 
-    ## Loading required package: usethis
-
-    ## Downloading GitHub repo alanbrookhart/NAMCS@HEAD
-
-    ## 
-    ## * checking for file ‘/private/var/folders/mc/th3fg_h15qlgvxv6znh6rkncjl_0ds/T/Rtmphw3JLa/remotesac4464c865fb/alanbrookhart-NAMCS-29fe223/DESCRIPTION’ ... OK
-    ## * preparing ‘NAMCS’:
-    ## * checking DESCRIPTION meta-information ... OK
-    ## * checking for LF line-endings in source and make files and shell scripts
-    ## * checking for empty or unneeded directories
-    ## * building ‘NAMCS_0.1.0.tar.gz’
-    ## Warning: invalid uid value replaced by that for user 'nobody'
-    ## Warning: invalid gid value replaced by that for user 'nobody'
+    library("devtools")
+    devtools::install_github("alanbrookhart/NAMCS")
 
 ### Variable names
 

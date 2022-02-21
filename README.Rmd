@@ -20,7 +20,7 @@ From these data, we identify new users of either NSAID or Cox-2 selective non-st
 
 You can install the package from Github
 
-```{r bb-installation, warning = FALSE, echo = FALSE}
+```{r bb-installation,eval=FALSE}
 library("devtools")
 devtools::install_github("alanbrookhart/NAMCS")
 ```

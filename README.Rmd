@@ -20,50 +20,22 @@ From these data, we identify new users of either NSAID or Cox-2 selective non-st
 
 You can install the package from Github
 
-```{r bb-installation, eval = FALSE}
+```{r bb-installation, warning = FALSE, echo = FALSE}
 library("devtools")
 devtools::install_github("alanbrookhart/NAMCS")
 ```
 
-## Codebook 
+### Variable names
 
-* age = age in years of participant (years)
-* sex = sex of participant (Male vs Female)
-* year = year of the survey
-* race = paricipant race (Hispanic, White, Black, Other)
-* region = region of tee
-* msa = weather the participant lives in a metropolitan area
-* region = region of the country (south, north east, mid-west, west)
-* pcdoc = indicator of whether the physician is a primary care doctors
-* do = indicator of whether the physician is osteopath
-* cam = indicator of whether the physician practices alternative medicine
-* arthrtis = history of osteoarthritis
-* asthma = history of asthma 
-* cancer = history of cancer
-* cebvd = history of cerebrovascular disease
-* crf = history of chronic renal failure 
-* chf = history of heart failure 
-* copd = history of chronic obstructive pulmonary disease
-* deprn = history of depression
-* diabetes = history of diabetes
-* hyplipid = history of hyperlipidemia
-* htn = history of hypertension
-* ihd = history of ischemic heart disease
-* ostprsis = history of osteoporosis
-* cox2_initiation = new user of COX-2 selective inhibitors versus non-selective NSAIDs
-* contaht = history of use of antihypertensives
-* contstatin = history of use of statins
-* conth2antagonist = history of use of H2 blockers
-* contppi = history of use of proton pump inhibitors
-* contaspirin = history of use of aspirin
-* contanticoag = history of use of anticoagulants
-* contsteroids = history of use of steroids
-* incident_pud = incident peptic ulcer disease during follow-up (simulated)
+```{r data}
+library("NAMCS")
+names(ns)
+```
 
-###
 
-```{r data, eval = FALSE}
-#library("NAMCS")
+### Example of data
+
+```{r data2}
 head(ns) 
 ```
 

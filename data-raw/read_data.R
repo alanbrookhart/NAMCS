@@ -57,7 +57,9 @@ names(ns)[names(ns) == "ihd"] = "coronory_artery_disease"
 ns$coronory_artery_disease = factor(ns$coronory_artery_disease, labels=c("No","Yes"))
 names(ns)[names(ns) == "cox2"] = "cox2_initiation"
 ns$cox2_initiation = factor(ns$cox2_initiation, labels=c("No","Yes"))
-
+ns$asthma = factor(ns$asthma, labels=c("No","Yes"))
+ns$cancer = factor(ns$cancer, labels=c("No","Yes"))
+ns$diabetes = factor(ns$diabetes, labels=c("No","Yes"))
 
 
 # drop unneeded columns
@@ -99,7 +101,6 @@ pbleed = 1/(1+exp(-(-8 + .6*I(ns$anti_coagulant_use == "Yes") + .5*I(ns$corticos
 
 ns$incident_pud = rbinom(size = 1, n = nrow(ns), p = pbleed)
 ns$incident_pud = factor(ns$incident_pud, labels=c("No","Yes"))
-
 
 
 # Save R data set in the NAMCS package

@@ -10,7 +10,7 @@ classified using the Multum Lexicon. Each year a few variables are added
 to, deleted from, or recoded in the public use dataset.
 
 From these data, we identify new users of either NSAID or Cox-2
-selective non-steroidal antiinflammatory drugs (NSAIDs). The data is
+selective non-steroidal antiinflammatory drugs (NSAIDs). The data are
 augmented with a simulated peptic ulcer disease outcome. Variables were
 selected for this extract based on relevance to the example analyses and
 on availability for most or all of the 2005-2009 time range.
@@ -29,60 +29,59 @@ You can install the package from Github
     names(ns)
 
     ##  [1] "year"                      "region"                   
-    ##  [3] "age"                       "cam"                      
-    ##  [5] "arthritis"                 "asthma"                   
-    ##  [7] "cancer"                    "cerebrovascular_disease"  
-    ##  [9] "chronic_pulmonary_disease" "chf"                      
-    ## [11] "copd"                      "depression"               
-    ## [13] "diabetes"                  "hyperlipidemia"           
-    ## [15] "hypertension"              "coronory_artery_disease"  
-    ## [17] "osteoporosis"              "cox2_initiation"          
-    ## [19] "anti_hypertensive_use"     "contstatin"               
-    ## [21] "h2_antagonist_use"         "ppi_use"                  
-    ## [23] "aspirin_use"               "anti_coagulant_use"       
-    ## [25] "corticosteroid_use"        "pud"                      
-    ## [27] "sex"                       "race"                     
-    ## [29] "incident_pud"
+    ##  [3] "age"                       "arthritis"                
+    ##  [5] "asthma"                    "cancer"                   
+    ##  [7] "cerebrovascular_disease"   "chronic_kidney_disease"   
+    ##  [9] "heart_failure"             "chronic_pulmonary_disease"
+    ## [11] "depression"                "diabetes"                 
+    ## [13] "hyperlipidemia"            "hypertension"             
+    ## [15] "coronory_artery_disease"   "osteoporosis"             
+    ## [17] "cox2_initiation"           "anti_hypertensive_use"    
+    ## [19] "statin_use"                "h2_antagonist_use"        
+    ## [21] "ppi_use"                   "aspirin_use"              
+    ## [23] "anti_coagulant_use"        "corticosteroid_use"       
+    ## [25] "sex"                       "race"                     
+    ## [27] "incident_pud"
 
 ### Example of data
 
     head(ns) 
 
-    ##   year    region age cam arthritis asthma cancer cerebrovascular_disease
-    ## 1 2005 Northeast  44   0         0      0      0                       0
-    ## 2 2005 Northeast  58   0         0      0      0                       0
-    ## 3 2005 Northeast  78   0         0      0      0                       0
-    ## 4 2005 Northeast  23   0         0      0      0                       0
-    ## 5 2005 Northeast  56   0         1      0      0                       0
-    ## 6 2005 Northeast  68   0         1      0      0                       0
-    ##   chronic_pulmonary_disease chf copd depression diabetes hyperlipidemia
-    ## 1                         0   0    0          0        0              0
-    ## 2                         0   0    0          0        0              0
-    ## 3                         0   0    0          0        0              0
-    ## 4                         0   0    0          0        0              0
-    ## 5                         0   0    0          0        0              0
-    ## 6                         0   0    0          0        1              0
-    ##   hypertension coronory_artery_disease osteoporosis cox2_initiation
-    ## 1            0                       0            0               0
-    ## 2            0                       0            0               1
-    ## 3            0                       0            0               0
-    ## 4            0                       0            0               0
-    ## 5            0                       0            0               0
-    ## 6            0                       0            0               0
-    ##   anti_hypertensive_use contstatin h2_antagonist_use ppi_use aspirin_use
-    ## 1                     0          0                 0       0           0
-    ## 2                     0          0                 0       0           0
-    ## 3                     0          0                 0       0           0
-    ## 4                     0          0                 0       0           0
-    ## 5                     0          0                 0       0           0
-    ## 6                     0          0                 0       1           0
-    ##   anti_coagulant_use corticosteroid_use pud    sex  race incident_pud
-    ## 1                  0                  0   0   Male White            1
-    ## 2                  0                  0   0 Female White            0
-    ## 3                  0                  0   0 Female White            0
-    ## 4                  0                  0   0   Male White            0
-    ## 5                  0                  0   0   Male White            0
-    ## 6                  0                  0   0 Female White            0
+    ##   year    region age arthritis asthma cancer cerebrovascular_disease
+    ## 1 2005 Northeast  44        No     No     No                      No
+    ## 2 2005 Northeast  58        No     No     No                      No
+    ## 3 2005 Northeast  78        No     No     No                      No
+    ## 4 2005 Northeast  23        No     No     No                      No
+    ## 5 2005 Northeast  56       Yes     No     No                      No
+    ## 6 2005 Northeast  68       Yes     No     No                      No
+    ##   chronic_kidney_disease heart_failure chronic_pulmonary_disease depression
+    ## 1                     No            No                        No         No
+    ## 2                     No            No                        No         No
+    ## 3                     No            No                        No         No
+    ## 4                     No            No                        No         No
+    ## 5                     No            No                        No         No
+    ## 6                     No            No                        No         No
+    ##   diabetes hyperlipidemia hypertension coronory_artery_disease osteoporosis
+    ## 1       No             No           No                      No           No
+    ## 2       No             No           No                      No           No
+    ## 3       No             No           No                      No           No
+    ## 4       No             No           No                      No           No
+    ## 5       No             No           No                      No           No
+    ## 6      Yes             No           No                      No           No
+    ##   cox2_initiation anti_hypertensive_use statin_use h2_antagonist_use ppi_use
+    ## 1              No                    No         No                No      No
+    ## 2             Yes                    No         No                No      No
+    ## 3              No                    No         No                No      No
+    ## 4              No                    No         No                No      No
+    ## 5              No                    No         No                No      No
+    ## 6              No                    No         No                No     Yes
+    ##   aspirin_use anti_coagulant_use corticosteroid_use    sex  race incident_pud
+    ## 1          No                 No                 No   Male White           No
+    ## 2          No                 No                 No Female White           No
+    ## 3          No                 No                 No Female White           No
+    ## 4          No                 No                 No   Male White           No
+    ## 5          No                 No                 No   Male White           No
+    ## 6          No                 No                 No Female White           No
 
 NAMCS Statin cohort data
 ------------------------

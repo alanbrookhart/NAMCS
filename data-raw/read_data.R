@@ -99,10 +99,12 @@ pbleed = 1/(1+exp(-(-8 + .6*I(ns$anti_coagulant_use == "Yes") + .5*I(ns$corticos
                     .2 * I(ns$aspirin_use == "Yes") + .7*I(ns$arthritis == "Yes") + .07*ns$age + .3*I(ns$sex == "Male") +
                     .02*I(ns$race == "Black") - .3 * I(ns$cox2_initiation =="Yes" ))))
 
-set.seed(101)
+set.seed(102)
 ns$incident_pud = rbinom(size = 1, n = nrow(ns), p = pbleed)
 ns$incident_pud = factor(ns$incident_pud, labels=c("No","Yes"))
 
+
+#glm(incident_pud ~ cox2_initiation, data = ns, family = binomial)
 
 # Save R data set in the NAMCS package
 usethis::use_data(ns, overwrite = TRUE)

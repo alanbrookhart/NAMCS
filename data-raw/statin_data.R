@@ -4,9 +4,6 @@
 
 library(tidyverse)
 library(foreign)
-library(causalRisk)
-library(foreach)
-library(purrr)
 
 #
 # read-in statin data
@@ -165,4 +162,4 @@ simulWeib <- function(df.in)
 sta = simulWeib(sta)
 
 # Save R data set in the NAMCS package
-#devtools::use_data(sta, overwrite=TRUE)
+usethis::use_data(sta, overwrite=TRUE)

@@ -82,28 +82,8 @@ You can install the package from Github
     ## 4          No                 No                 No   Male White           No
     ## 5          No                 No                 No   Male White           No
     ## 6          No                 No                 No Female White           No
-
-NAMCS Statin cohort data
-------------------------
-
-We have built a cohort from the 2005-2009 public use files from National
-Ambulatory Medical Care Data Survey (NAMCS). The NAMCS survey covers
-over 20,000 visits per year and includes data on patient demographics,
-comorbidities, physician and practice characteristics, and treatment
-received, including medications. Currently, medications are classified
-using the Multum Lexicon. Each year a few variables are added to,
-deleted from, or recoded in the public use dataset.
-
-From these data, we identify all visits among adults who are not
-currently treated with a statin. Patients are then either observed to
-initiate a statin or remain untreated. Statin initiators are further
-classified into users of high vs low potency statins.
-
-We then use the baseline data to simulate two outcomes: risk of a
-cardiovascular disease event and death. We further simulate the time to
-protocol non-adherence (initation of a statin among patients who are
-untreated or discontinuation of a statin among initiators.)
-
+    
+    
 Codebook
 --------
 
@@ -139,6 +119,29 @@ Codebook
 -   corticosteroid\_use = history of use of steroids
 -   incident\_pud = new diagnosis peptic ulcer disease durig follow-up
     (simulated
+
+
+NAMCS Statin cohort data
+------------------------
+
+We have built a cohort from the 2005-2009 public use files from National
+Ambulatory Medical Care Data Survey (NAMCS). The NAMCS survey covers
+over 20,000 visits per year and includes data on patient demographics,
+comorbidities, physician and practice characteristics, and treatment
+received, including medications. Currently, medications are classified
+using the Multum Lexicon. Each year a few variables are added to,
+deleted from, or recoded in the public use dataset.
+
+From these data, we identify all visits among adults who are not
+currently treated with a statin. Patients are then either observed to
+initiate a statin or remain untreated. Statin initiators are further
+classified into users of high vs low potency statins.
+
+We then use the baseline data to simulate two outcomes: risk of a
+cardiovascular disease event and death. We further simulate the time to
+protocol non-adherence (initation of a statin among patients who are
+untreated or discontinuation of a statin among initiators.)
+
 
 Notes
 -----

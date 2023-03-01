@@ -89,7 +89,7 @@ Codebook
 -   age = age in years of participant (years)
 -   sex = sex of participant (Male vs Female)
 -   year = year of the survey
--   race = paricipant race (Hispanic, White, Black, Other)
+-   race = participant race (Hispanic, White, Black, Other)
 -   region = region of the country (south, north east, mid-west, west)
 -   arthritis = history of osteoarthritis
 -   asthma = history of asthma
@@ -116,8 +116,8 @@ Codebook
 -   aspirin\_use = history of use of aspirin
 -   anti\_coagulant\_use = history of use of anticoagulants
 -   corticosteroid\_use = history of use of steroids
--   incident\_pud = new diagnosis peptic ulcer disease durig follow-up
-    (simulated
+-   incident\_pud = new diagnosis of peptic ulcer disease durig follow-up
+    (simulated)
 
 
 NAMCS Statin cohort data

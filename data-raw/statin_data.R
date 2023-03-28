@@ -155,7 +155,7 @@ simulWeib <- function(df.in)
                            ifelse(nonadherence > death_time, NA, nonadherence),
                            nonadherence)
   nonadherence = round(ifelse(nonadherence > 10, NA, nonadherence), 2)
-  loss_followup = runif(N) * 10
+  loss_followup = round(runif(N) * 10, 1)
   cbind(df1, data.frame(cv_time, death_time, nonadherence, cv_indicator,
                         loss_followup, cv_death_time))
 }

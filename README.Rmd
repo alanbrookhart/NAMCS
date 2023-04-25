@@ -33,22 +33,6 @@ names(ns)
 ```
 
 
-### Example of data
-
-```{r data2}
-head(ns) 
-```
-
-
-## NAMCS Statin cohort data
-
-We have built a cohort from the 2005-2009 public use files from National Ambulatory Medical Care Data Survey (NAMCS).  The NAMCS survey covers over 20,000 visits per year and includes data on patient demographics, comorbidities, physician and practice characteristics, and treatment received, including medications. Currently, medications are classified using the Multum Lexicon. Each year a few variables are added to, deleted from, or recoded in the public use dataset. 
-
-From these data, we identify all visits among adults who are not currently treated with a statin.  Patients are then either observed to initiate a statin or remain untreated.  Statin initiators are further classified into users of high vs low potency statins. 
-
-We then use the baseline data to simulate two outcomes: risk of a cardiovascular disease event and death.  We further simulate the time to protocol non-adherence (initation of a statin among patients who are untreated or discontinuation of a statin among initiators.)
-
-
 ## Codebook 
 
 * age = age in years of participant (years)
@@ -65,13 +49,12 @@ We then use the baseline data to simulate two outcomes: risk of a cardiovascular
 * chronic_pulmonary_disease = history of chronic obstructive pulmonary disease
 * depression = history of depression
 * diabetes = history of diabetes
-* hyplipididemia = history of hyperlipidemia
+* hyperlipidemia = history of hyperlipidemia
 * mi = history of myocardial infarction
 * hypertension = history of hypertension
-* coronory_artery_disease = history of ischemic heart disease
+* coronary_artery_disease = history of ischemic heart disease
 * osteoporosis = history of osteoporosis
 * obesity = patient is obese 
-* tabocco_use = patient has a history of smoking
 * anti_hypertensive_use = history of use of antihypertensives
 * h2_antagonist_use = history of use of H2 blockers, gastroprotective agents
 * ppi_use = history of use of proton pump inhibitors, gastroprotective agents
@@ -79,6 +62,22 @@ We then use the baseline data to simulate two outcomes: risk of a cardiovascular
 * anti_coagulant_use = history of use of anticoagulants
 * corticosteroid_use = history of use of steroids
 * incident_pud = new diagnosis peptic ulcer disease durig follow-up (simulated
+
+
+### Summary 
+
+```{r data2}
+summary(ns) 
+```
+
+
+## NAMCS Statin cohort data
+
+We have built a cohort from the 2005-2009 public use files from National Ambulatory Medical Care Data Survey (NAMCS).  The NAMCS survey covers over 20,000 visits per year and includes data on patient demographics, comorbidities, physician and practice characteristics, and treatment received, including medications. Currently, medications are classified using the Multum Lexicon. Each year a few variables are added to, deleted from, or recoded in the public use dataset. 
+
+From these data, we identify all visits among adults who are not currently treated with a statin.  Patients are then either observed to initiate a statin or remain untreated.  Statin initiators are further classified into users of high vs low potency statins. 
+
+We then use the baseline data to simulate two outcomes: risk of a cardiovascular disease event and death.  We further simulate the time to protocol non-adherence (initation of a statin among patients who are untreated or discontinuation of a statin among initiators.)
 
 
 ## Notes

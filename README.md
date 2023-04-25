@@ -1,5 +1,4 @@
-NAMCS NSAID data
-----------------
+## NAMCS NSAID data
 
 This package builds a cohort from the 2005-2009 public use files from
 National Ambulatory Medical Care Data Survey (NAMCS). The NAMCS survey
@@ -9,13 +8,13 @@ treatment received, including medications. Currently, medications are
 classified using the Multum Lexicon. Each year a few variables are added
 to, deleted from, or recoded in the public use dataset.
 
-From these data, we identify new users of either a non-selective non-steroidal antiinflammatory drug (NSAID) or Cox-2 selective NSAID. 
-The data are augmented with a simulated peptic ulcer disease outcome. Variables were
+From these data, we identify new users of either NSAID or Cox-2
+selective non-steroidal antiinflammatory drugs (NSAIDs). The data are
+augmented with a simulated peptic ulcer disease outcome. Variables were
 selected for this extract based on relevance to the example analyses and
 on availability for most or all of the 2005-2009 time range.
 
-Installation
-------------
+## Installation
 
 You can install the package from Github
 
@@ -42,54 +41,12 @@ You can install the package from Github
     ## [25] "sex"                       "race"                     
     ## [27] "incident_pud"
 
-### Example of data
-
-    head(ns) 
-
-    ##   year    region age arthritis asthma cancer cerebrovascular_disease
-    ## 1 2005 Northeast  44        No     No     No                      No
-    ## 2 2005 Northeast  58        No     No     No                      No
-    ## 3 2005 Northeast  78        No     No     No                      No
-    ## 4 2005 Northeast  23        No     No     No                      No
-    ## 5 2005 Northeast  56       Yes     No     No                      No
-    ## 6 2005 Northeast  68       Yes     No     No                      No
-    ##   chronic_kidney_disease heart_failure chronic_pulmonary_disease depression
-    ## 1                     No            No                        No         No
-    ## 2                     No            No                        No         No
-    ## 3                     No            No                        No         No
-    ## 4                     No            No                        No         No
-    ## 5                     No            No                        No         No
-    ## 6                     No            No                        No         No
-    ##   diabetes hyperlipidemia hypertension coronory_artery_disease osteoporosis
-    ## 1       No             No           No                      No           No
-    ## 2       No             No           No                      No           No
-    ## 3       No             No           No                      No           No
-    ## 4       No             No           No                      No           No
-    ## 5       No             No           No                      No           No
-    ## 6      Yes             No           No                      No           No
-    ##   cox2_initiation anti_hypertensive_use statin_use h2_antagonist_use ppi_use
-    ## 1              No                    No         No                No      No
-    ## 2             Yes                    No         No                No      No
-    ## 3              No                    No         No                No      No
-    ## 4              No                    No         No                No      No
-    ## 5              No                    No         No                No      No
-    ## 6              No                    No         No                No     Yes
-    ##   aspirin_use anti_coagulant_use corticosteroid_use    sex  race incident_pud
-    ## 1          No                 No                 No   Male White           No
-    ## 2          No                 No                 No Female White           No
-    ## 3          No                 No                 No Female White           No
-    ## 4          No                 No                 No   Male White           No
-    ## 5          No                 No                 No   Male White           No
-    ## 6          No                 No                 No Female White           No
-    
-    
-Codebook
---------
+## Codebook
 
 -   age = age in years of participant (years)
 -   sex = sex of participant (Male vs Female)
 -   year = year of the survey
--   race = participant race (Hispanic, White, Black, Other)
+-   race = paricipant race (Hispanic, White, Black, Other)
 -   region = region of the country (south, north east, mid-west, west)
 -   arthritis = history of osteoarthritis
 -   asthma = history of asthma
@@ -101,13 +58,12 @@ Codebook
     pulmonary disease
 -   depression = history of depression
 -   diabetes = history of diabetes
--   hyplipididemia = history of hyperlipidemia
+-   hyperlipidemia = history of hyperlipidemia
 -   mi = history of myocardial infarction
 -   hypertension = history of hypertension
--   coronory\_artery\_disease = history of ischemic heart disease
+-   coronary\_artery\_disease = history of ischemic heart disease
 -   osteoporosis = history of osteoporosis
 -   obesity = patient is obese
--   tabocco\_use = patient has a history of smoking
 -   anti\_hypertensive\_use = history of use of antihypertensives
 -   h2\_antagonist\_use = history of use of H2 blockers,
     gastroprotective agents
@@ -116,12 +72,57 @@ Codebook
 -   aspirin\_use = history of use of aspirin
 -   anti\_coagulant\_use = history of use of anticoagulants
 -   corticosteroid\_use = history of use of steroids
--   incident\_pud = new diagnosis of peptic ulcer disease durig follow-up
-    (simulated)
+-   incident\_pud = new diagnosis peptic ulcer disease durig follow-up
+    (simulated
 
+### Summary
 
-NAMCS Statin cohort data
-------------------------
+    summary(ns) 
+
+    ##    year           region          age        arthritis  asthma     cancer    
+    ##  2005:468   Northeast: 489   Min.   :18.00   No :1977   No :2760   No :2795  
+    ##  2006:625   Midwest  : 639   1st Qu.:35.00   Yes: 905   Yes: 122   Yes:  87  
+    ##  2007:601   South    :1083   Median :47.00                                   
+    ##  2008:548   West     : 671   Mean   :47.81                                   
+    ##  2009:640                    3rd Qu.:59.00                                   
+    ##                              Max.   :97.00                                   
+    ##  cerebrovascular_disease chronic_kidney_disease heart_failure
+    ##  No :2845                No :2866               No :2868     
+    ##  Yes:  37                Yes:  16               Yes:  14     
+    ##                                                              
+    ##                                                              
+    ##                                                              
+    ##                                                              
+    ##  chronic_pulmonary_disease depression diabetes   hyperlipidemia hypertension
+    ##  No :2816                  No :2618   No :2636   No :2499       No :2206    
+    ##  Yes:  66                  Yes: 264   Yes: 246   Yes: 383       Yes: 676    
+    ##                                                                             
+    ##                                                                             
+    ##                                                                             
+    ##                                                                             
+    ##  coronory_artery_disease osteoporosis cox2_initiation anti_hypertensive_use
+    ##  No :2826                No :2807     No :2642        No :2693             
+    ##  Yes:  56                Yes:  75     Yes: 240        Yes: 189             
+    ##                                                                            
+    ##                                                                            
+    ##                                                                            
+    ##                                                                            
+    ##  statin_use h2_antagonist_use ppi_use    aspirin_use anti_coagulant_use
+    ##  No :2725   No :2849          No :2791   No :2790    No :2871          
+    ##  Yes: 157   Yes:  33          Yes:  91   Yes:  92    Yes:  11          
+    ##                                                                        
+    ##                                                                        
+    ##                                                                        
+    ##                                                                        
+    ##  corticosteroid_use     sex               race      incident_pud
+    ##  No :2864           Length:2882        White:2275   No :2594    
+    ##  Yes:  18           Class :character   Black: 440   Yes: 288    
+    ##                     Mode  :character   Other: 167               
+    ##                                                                 
+    ##                                                                 
+    ## 
+
+## NAMCS Statin cohort data
 
 We have built a cohort from the 2005-2009 public use files from National
 Ambulatory Medical Care Data Survey (NAMCS). The NAMCS survey covers
@@ -141,8 +142,6 @@ cardiovascular disease event and death. We further simulate the time to
 protocol non-adherence (initation of a statin among patients who are
 untreated or discontinuation of a statin among initiators.)
 
-
-Notes
------
+## Notes
 
 NAMCS sampling weights are not included.

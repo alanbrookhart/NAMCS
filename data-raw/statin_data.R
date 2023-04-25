@@ -136,14 +136,21 @@ simulWeib <- function(df.in)
                 log(2.5)*I(coronory_artery_disease=="Yes") +
                 log(2.5)*I(tobacco_use=="Yes") + log(2.5)*I(cancer=="Yes"))
 
+  # loss_followup
+  loss_fu_time = round(runif(N) * 20, 1)
 
-  # Weibull latent event times
+  # Weibull event times
   v <- runif(N)
   cv_time <- (- log(v) / (0.011 * exp(lp.1)))^(1 / shape.t1) + 0.1
-  death_time <- (- log(v) / (0.012 * exp(lp.2)))^(1 / shape.t2) + 0.1 # risk is smaller for mortality compared to hospitalization. To make coefficients for cat.2 match that specified for lp.1 need to set the mortality risk much smaller than hospitalization (average of simulated parameters run in the following for loop)
-  death_time = round(ifelse(death_time >10, NA, death_time), 2)
-  cv_time = round(ifelse(cv_time >10 | cv_time > death_time, NA, cv_time),2)
+  death_time <- (- log(v) / (0.012 * exp(lp.2)))^(1 / shape.t2) + 0.1
+
+  tmp_death_time = round(ifelse(death_time >10 | death_time > loss_fu_time, NA, death_time), 2)
+  tmp_loss_fu_time = ifelse(loss_fu_time > death_time | loss_fu_time > 10, NA, loss_fu_time)
+  cv_time = round(ifelse(cv_time >10 | cv_time > death_time | cv_time > loss_fu_time, NA, cv_time),2)
+  death_time = tmp_death_time
+  loss_fu_time = tmp_loss_fu_time
   cv_death_time = pmin(cv_time, death_time, na.rm = TRUE)
+
   cv_indicator = ifelse(cv_time == cv_death_time, 1, 0)
   cv_indicator = ifelse(is.na(cv_indicator), 0, cv_indicator)
   cv_indicator = ifelse(is.na(cv_death_time), NA, cv_indicator)
@@ -154,10 +161,9 @@ simulWeib <- function(df.in)
   nonadherence = ifelse(!is.na(death_time),
                            ifelse(nonadherence > death_time, NA, nonadherence),
                            nonadherence)
-  nonadherence = round(ifelse(nonadherence > 10, NA, nonadherence), 2)
-  loss_followup = round(runif(N) * 10, 1)
+  nonadherence = round(ifelse(nonadherence > 12, NA, nonadherence), 2)
   cbind(df1, data.frame(cv_time, death_time, nonadherence, cv_indicator,
-                        loss_followup, cv_death_time))
+                        loss_fu_time, cv_death_time))
 }
 sta = simulWeib(sta)
 

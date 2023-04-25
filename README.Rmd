@@ -61,6 +61,7 @@ names(ns)
 * aspirin_use = history of use of aspirin
 * anti_coagulant_use = history of use of anticoagulants
 * corticosteroid_use = history of use of steroids
+* cox2_initiation = whether the patient initiated a coxib vs a NSAID
 * incident_pud = new diagnosis peptic ulcer disease durig follow-up (simulated
 
 

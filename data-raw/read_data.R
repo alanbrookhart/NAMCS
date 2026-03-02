@@ -1,111 +1,71 @@
-
 # read_data.R
-# Purpose: read-in subsetted NAMCS data from selected years
-# write out easy to use R files with simulated outcome
-
+# Purpose: read-in subsetted NAMCS data and save as package data
 library(tidyverse)
 library(foreign)
-devtools::install_github("r-lib/usethis")
 
-# read-in NSAID data
-tmp <- read.dta("./data-raw/nsaid008.dta")
-ns <- as_tibble(tmp)
+# 1. Helpers
+to_no_yes <- function(x) factor(x, levels = c(0, 1), labels = c("No", "Yes"))
 
-# recode variables
+drop_patterns <- c("reas", "urban", "pct", "imp", "pud", "cam", "bp",
+                   "major", "code", "mddo", "new", "nsnsaid", "spec",
+                   "west", "east", "payer", "south", "racer", "raceb",
+                   "nonmetro", "male", "contnsaid", "msa", "pcdoc", "do", "zip")
 
-ns$region=factor(ns$region,
-                 labels=c("Northeast","Midwest","South","West"))
-ns$year = as_factor(ns$year)
+# 2. Processing
+ns <- read.dta("./data-raw/nsaid008.dta") %>%
+  as_tibble() %>%
+  rename(
+    h2_antagonist_use = conth2antagonist,
+    statin_use = contstatin,
+    corticosteroid_use = contsteroids,
+    anti_hypertensive_use = contaht,
+    anti_coagulant_use = contanticoag,
+    heart_failure = chf,
+    ppi_use = contppi,
+    cerebrovascular_disease = cebvd,
+    hypertension = htn,
+    aspirin_use = contaspirin,
+    depression = deprn,
+    hyperlipidemia = hyplipid,
+    chronic_kidney_disease = crf,
+    chronic_pulmonary_disease = copd,
+    osteoporosis = ostprsis,
+    arthritis = arthrtis,
+    coronory_artery_disease = ihd,
+    cox2_initiation = newcox2
+  ) %>%
+  mutate(
+    region = factor(region, labels = c("Northeast", "Midwest", "South", "West")),
+    year   = as_factor(year),
+    sex    = if_else(male == 1, "Male", "Female"),
+    race   = factor(racer, labels = c("White", "Black", "Other")),
+    across(where(is.numeric) & !c(age, year), to_no_yes)
+  ) %>%
+  select(-any_of(drop_patterns), -starts_with(c("reas", "reason")))
 
-ns$sex=ifelse(ns$male==1,"Male","Female")
-ns$race=factor(ns$racer,
-               labels=c("White","Black","Other"))
-ns$cox2 = ns$newcox2
-names(ns)[names(ns) == "conth2antagonist"] = "h2_antagonist_use"
-ns$h2_antagonist_use =factor(ns$h2_antagonist_use, labels=c("No","Yes"))
-names(ns)[names(ns) == "contstatin"] = "statin_use"
-ns$statin_use =factor(ns$statin_use, labels=c("No","Yes"))
-names(ns)[names(ns) == "contsteroids"] = "corticosteroid_use"
-ns$corticosteroid_use =factor(ns$corticosteroid_use, labels=c("No","Yes"))
-names(ns)[names(ns) == "contaht"] = "anti_hypertensive_use"
-ns$anti_hypertensive_use =factor(ns$anti_hypertensive_use, labels=c("No","Yes"))
-names(ns)[names(ns) == "contanticoag"] = "anti_coagulant_use"
-ns$anti_coagulant_use = factor(ns$anti_coagulant_use, labels=c("No","Yes"))
-names(ns)[names(ns) == "chf"] = "heart_failure"
-ns$heart_failure = factor(ns$heart_failure, labels=c("No","Yes"))
-names(ns)[names(ns) == "contppi"] = "ppi_use"
-ns$ppi_use =factor(ns$ppi_use, labels=c("No","Yes"))
-names(ns)[names(ns) == "cebvd"] = "cerebrovascular_disease"
-ns$cerebrovascular_disease = factor(ns$cerebrovascular_disease, labels=c("No","Yes"))
-names(ns)[names(ns) == "htn"] = "hypertension"
-ns$hypertension = factor(ns$hypertension, labels=c("No","Yes"))
-names(ns)[names(ns) == "contaspirin"] = "aspirin_use"
-ns$aspirin_use = factor(ns$aspirin_use, labels=c("No","Yes"))
-names(ns)[names(ns) == "deprn"] = "depression"
-ns$depression = factor(ns$depression, labels=c("No","Yes"))
-names(ns)[names(ns) == "hyplipid"] = "hyperlipidemia"
-ns$hyperlipidemia = factor(ns$hyperlipidemia, labels=c("No","Yes"))
-names(ns)[names(ns) == "crf"] = "chronic_kidney_disease"
-ns$chronic_kidney_disease = factor(ns$chronic_kidney_disease, labels=c("No","Yes"))
-names(ns)[names(ns) == "copd"] = "chronic_pulmonary_disease"
-ns$chronic_pulmonary_disease = factor(ns$chronic_pulmonary_disease, labels=c("No","Yes"))
-names(ns)[names(ns) == "ostprsis"] = "osteoporosis"
-ns$osteoporosis = factor(ns$osteoporosis, labels=c("No","Yes"))
-names(ns)[names(ns) == "arthrtis"] = "arthritis"
-ns$arthritis = factor(ns$arthritis, labels=c("No","Yes"))
-names(ns)[names(ns) == "ihd"] = "coronory_artery_disease"
-ns$coronory_artery_disease = factor(ns$coronory_artery_disease, labels=c("No","Yes"))
-names(ns)[names(ns) == "cox2"] = "cox2_initiation"
-ns$cox2_initiation = factor(ns$cox2_initiation, labels=c("No","Yes"))
-ns$asthma = factor(ns$asthma, labels=c("No","Yes"))
-ns$cancer = factor(ns$cancer, labels=c("No","Yes"))
-ns$diabetes = factor(ns$diabetes, labels=c("No","Yes"))
-
-
-# drop unneeded columns
-ns = ns %>% select(-starts_with("reas1")) %>%
-  select(-starts_with("reas2")) %>%
-  select(-starts_with("reason")) %>%
-  select(-starts_with("urban")) %>%
-  select(-starts_with("pct"))  %>%
-  select(-contains("imp")) %>%
-  select(-contains("pud")) %>%
-  select(-contains("cam")) %>%
-  select(-contains("bp")) %>%
-  select(-contains("major")) %>%
-  select(-contains("code")) %>%
-  select(-contains("code")) %>%
-  select(-contains("mddo")) %>%
-  select(-contains("new")) %>%
-  select(-contains("nsnsaid")) %>%
-  select(-contains("spec")) %>%
-  select(-contains("west")) %>%
-  select(-contains("east")) %>%
-  select(-contains("payer")) %>%
-  select(-contains("south")) %>%
-  select(-contains("racer")) %>%
-  select(-contains("raceb")) %>%
-  select(-contains("nonmetro")) %>%
-  select(-contains("male")) %>%
-  select(-contains("contnsaid")) %>%
-  select(-contains("msa")) %>%
-  select(-contains("pcdoc")) %>%
-  select(-contains("do")) %>%
-  select(-contains("zip"))
-
-# simulate outcome
-
-pbleed = 1/(1+exp(-(-6.5 + .6*I(ns$anti_coagulant_use == "Yes") + .5*I(ns$corticosteroid_use == "Yes") +
-                    .2 * I(ns$aspirin_use == "Yes") + .7*I(ns$arthritis == "Yes") + .07*ns$age + .3*I(ns$sex == "Male") +
-                    .02*I(ns$race == "Black") - .3 * I(ns$cox2_initiation =="Yes" ))))
-
+# 3. Simulation
 set.seed(102)
-ns$incident_pud = rbinom(size = 1, n = nrow(ns), p = pbleed)
-ns$incident_pud = factor(ns$incident_pud, labels=c("No","Yes"))
+ns <- ns %>%
+  mutate(
+    pbleed = 1 / (1 + exp(-(-6.5 +
+                              0.6 * (anti_coagulant_use == "Yes") +
+                              0.5 * (corticosteroid_use == "Yes") +
+                              0.2 * (aspirin_use == "Yes") +
+                              0.7 * (arthritis == "Yes") +
+                              0.07 * age +
+                              0.3 * (sex == "Male") +
+                              0.02 * (race == "Black") -
+                              0.3 * (cox2_initiation == "Yes")
+    ))),
+    incident_pud = rbinom(n(), size = 1, prob = pbleed),
+    incident_pud = factor(incident_pud, labels = c("No", "Yes"))
+  ) %>%
+  select(-pbleed)
 
+# 4. Save as .rda in the data/ folder
+if (!dir.exists("data")) dir.create("data")
 
-#glm(incident_pud ~ cox2_initiation, data = ns, family = binomial)
+# Saving 'ns' as 'ns.rda' ensures data(ns) works once the package is loaded
+save(ns, file = "data/ns.rda", compress = "xz")
 
-# Save R data set in the NAMCS package
-usethis::use_data(ns, overwrite = TRUE)
-
+message("Data saved to data/ns.rda")

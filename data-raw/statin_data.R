@@ -168,4 +168,9 @@ simulWeib <- function(df.in)
 sta = simulWeib(sta)
 
 # Save R data set in the NAMCS package
-usethis::use_data(sta, overwrite=TRUE)
+#usethis::use_data(sta, overwrite=TRUE)
+
+# Saving 'ns' as 'ns.rda' ensures data(ns) works once the package is loaded
+save(sta, file = "data/sta.rda", compress = "xz")
+
+message("Data saved to data/sta.rda")
